@@ -7,6 +7,7 @@
 .RDataTmp
 *.DS_Store*
 *san_jose_policecalls_2022*
+*.Rproj
 
 # User-specific files
 .Ruserdata
