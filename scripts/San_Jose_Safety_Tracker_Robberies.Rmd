@@ -1,7 +1,7 @@
 ---
-title: "Neighborhood<br>Safety Tracker"
+title: "ABC7 San Jose Neighborhood Safety Tracker"
 # author: "John Kelly"
-date: "Updated `r format(Sys.time(), '%B %d, %Y')` by the ABC7 Data Team"
+# date: Sys.time()
 output: html_document
 ---
 
@@ -18,26 +18,17 @@ library(sf)
 ```
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
+![<popupchatter>Updated `r format(Sys.time(), '%B %d, %Y')` by the ABC7 Data Team</popupchatter>](https://github.com/abcotvdata/safetytracker_sanjose/raw/main/docs/banner_kgo.png)
+
 ```{css, echo=FALSE}
-
-
-h1.title {
-  background-image: url('https://abcotvdata.github.io/safetytracker_newyork/skyline1.png');
-  background-repeat: no-repeat;
-  background-size: 110%;
-}
-
-div {
-  padding: 0.25em;
-}
 
 h1.title {
   font-family: roboto;
-  color: white;
+  color: transparent;
   font-weight: 700;
   text-align: left;
-  font-size: 36px;
-  padding: 10px;
+  font-size: 12px;
+  padding: 0px;
 }
 
 .date {
@@ -193,117 +184,104 @@ th {
    }
 ```
 
-```{r beats, include=FALSE}
-# set value of nyc_population
-nyc_population <- 8804190
+```{r population, include=FALSE}
+# set value of sf_population
+sf_population <- 815201
 ```
 
+<h2>ABC7 is tracking crime and safety across San Jose and in your neighborhood. 
 
-```{r crimedata, include=FALSE}
-# Source data pre-processed separately at 
-# process_newyork_crime_data.R
-```
-
-<h2>Eyewitness News is tracking crime and safety across New York City and in your neighborhood. 
-
-You can choose which crime to explore: <select onchange="window.location=this.value">
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_Robberies.html">Robberies</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_Assaults.html">Assaults</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_AutoThefts.html">Auto Thefts</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_Burglaries.html">Burglaries</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker.html">Homicides</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_Robberies.html">Robberies</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_SexualAssaults.html">Sexual Assaults</option>
-<option value="https://abcotvdata.github.io/safetytracker_houston/New_York_Safety_Tracker_Larcenies.html">Grand Larcenies</option>
+<br>You can choose which crime to examine: <select onchange="window.location=this.value">
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Robberies.html">Robberies</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Assaults.html">Assaults</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_VehicleThefts.html">Vehicle Thefts</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Burglaries.html">Burglaries</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker.html">Homicides</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Robberies.html">Robberies</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_SexualAssaults.html">Sexual Assaults</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Thefts.html">Thefts</option>
+</select></h2>
+<h2>Choose a different Bay Area city to explore: <select onchange="window.location=this.value">
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Assaults.html">San Jose</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanfrancisco/San_Francisco_Safety_Tracker.html">San Francisco</option>
+<option value="https://abcotvdata.github.io/safetytracker_oakland/Oakland_Safety_Tracker.html">Oakland</option>
 </select></h2>
 
 <div class="cardContainer">
 <div class="card" style="background-color:#99a0a5;">
 <p>Robberies<br>
-<bignumber>`r prettyNum(robberies_city$yeartodate2022, big.mark=",")`<br></bignumber>
-<p>Year To Date<br>Through `r format((Sys.Date() - 4), "%B %d")`</p>
+<bignumber>`r prettyNum(robberies_city$last12mos, big.mark=",")`<br></bignumber>
+<p>Last 12 months<br>Through  `r format(asofdate, "%B %d")`</p>
 </div>
 <div class="card" style="background-color:#99a0a5;">
 <p>Average Robberies<br>
-<bignumber>`r robberies_city$yeartodate2021`<br></bignumber>
-<p>Year To Date<br>Same Period in 2021</p>
+<bignumber>`r prettyNum(round(robberies_city$avg_prior3years,0), big.mark=",")`<br></bignumber><p>
+Yearly average<br>2019 to 2021</p>
 </div>
 <div class="card" style="background-color:#99a0a5;">
 <p>Robbery Rate<br>
-<bignumber>`r robberies_city$rate_last12`<br></bignumber><p>
+<bignumber>`r round(robberies_city$rate_last12,0)`<br></bignumber><p>
 Per 100,000 people<br>Last 12 months</p>
 </div>
 <div class="card" style="background-color:#99a0a5;">
-<p>Average Robberies Rate<br>
-<bignumber>`r robberies_city$rate_prior3years`<br></bignumber><p>
+<p>Average Robbery Rate<br>
+<bignumber>`r round(robberies_city$rate_prior3years,0)`<br></bignumber><p>
 Per 100,000 people<br>2019 to 2021</p>
 </div>
 </div>
 <br>
-Robberies so far this year are trending <h8>`r ifelse(robberies_city$yeartodate_pct_change>=0," up"," down")` `r ifelse(robberies_city$yeartodate_pct_change>=0,robberies_city$yeartodate_pct_change,substring(robberies_city$yeartodate_pct_change,2))`%</h8> compared to the same time period in 2021.
+Robberies over the last 12 months are <h8>`r ifelse(robberies_city$inc_prior3yearavgtolast12>=0," up"," down")` `r ifelse(robberies_city$inc_prior3yearavgtolast12>=0,robberies_city$inc_prior3yearavgtolast12,substring(robberies_city$inc_prior3yearavgtolast12,2))`%</h8> compared to the annual average over the last three years, according to San Jose Police Department data through `r format(asofdate, "%B %d")`.
 
-However, the robbery rate over the last 12 months is<h8>`r ifelse((robberies_city$last12mos-robberies_city$avg_prior3years)>=0," up"," down")`</h8> compared to the annual average over the last three years, and the frequency of robberies remains higher than it was before the pandemic.
+The city averaged <h8>`r round(robberies_city$last12mos/52,0)`</h8> robberies a week over the last 12 months. In 2019, that number was <h8>`r round(robberies_city$total19/52,0)`</h8> a week.
 
-The city is averaging <h8>`r round(robberies_city$last12mos/52,0)`</h8> robberies a week over the last 12 months. In 2019, that number was <h8>`r round(robberies_city$total19/52,0)`</h8> a week.
+<subhead>A closer look at San Jose robberies neighborhood by neighborhood</subhead>
 
-The risk is not the same neighborhood to neighborhood.
+The risk is not the same neighborhood to neighborhood. ABC7's data team looked at the San Jose Police Department's data by neighborhood from 2019 through `r format(asofdate, "%B %d, %Y")`.
 
-ABC7's data team looked at the New York Police Department's data by neighborhood from 2019 through `r format((Sys.Date() - 4), "%B %d")`.
+The map color codes each neighborhood by the robbery rate over the last 12 months. The three darker blues represent neighborhoods with robbery rates that are higher than the citywide rate. You can also click the box in the bottom right corner to see neighborhoods by the number of robberies.
 
-<subhead>A closer look at robberies by neighborhood</subhead>
-
-The map color-codes each neighborhood by the robbery rate over the last 12 months. Darker blue areas are neighborhoods where the rate is higher than the citywide rate.
-
-You can click any neighborhood to see detailed numbers or the buttons at the bottom of the map to switch between numbers and rates. You can search for a street, place, landmark or zip code to zoom to that location.
+Click on any neighborhood on the map to see detailed figures, rates and trends. You can also search for a street name, place, landmark or zip code.
 
 <br>
-```{r cars, echo=FALSE,out.width='100%',out.height='800'}
-# ROBBERIES MAP
+```{r cars, echo=FALSE,out.width='100%',out.height='600'}
+# robbery MAP
 
 # Set bins for numbers of crimes for robberies map
-robberiesbins1 <- c(0,
+robberybins1 <- c(0,
+                100,
+                200,
+                300,
+                500,
+                1500)
+robberybins2 <- c(0,
+                25,
+                50,
                 100,
                 250,
-                500,
-                750,
-                3000)
-robberiesbins2 <- c(0,
-                100,
-                250,
-                500,
-                750,
-                1000)
-robberiespal1 <- colorBin(c("#99a0a5",
+                600)
+robberypal1 <- colorBin(c("#99a0a5",
                              "#2787d6",
                              "#0058f6",
                              "#003ca6",
-                             "#00215c"), robberies_beat$rate_last12, bins = robberiesbins1,na.color = "#51585f")
+                             "#00215c"), robberies_district$rate_last12, bins = robberybins1,na.color = "#51585f")
 
-robberiespal2 <- colorBin(c("#99a0a5",
+robberypal2 <- colorBin(c("#99a0a5",
                              "#2787d6",
                              "#0058f6",
                              "#003ca6",
-                             "#00215c"), robberies_beat$last12mos, bins = robberiesbins2,na.color = "#51585f")
+                             "#00215c"), robberies_district$last12mos, bins = robberybins2,na.color = "#51585f")
 
-                            
-# Create labels for robberies map
-robberieslabel <- paste(sep="",
+
+# Create quick labels for robberies map
+robberylabel <- paste(sep="",
                      "<popuptitle>",
-                     robberies_beat$yeartodate2022,
-                     ifelse(robberies_beat$yeartodate2022==1,
-                            " robbery", " robberies"),
-                     "</popuptitle><br>so far this year in <b>Precinct ",
-                     robberies_beat$precinct,
-                     "</b>, home to about ",
-                     prettyNum(robberies_beat$population, big.mark=","),
-                     " people. That's ",
-                     case_when(robberies_beat$yeartodate2022>
-                              robberies_beat$yeartodate2021 ~ "up from ",
-                     robberies_beat$yeartodate2022<
-                              robberies_beat$yeartodate2021 ~ "down from ",
-                     TRUE ~ "the same as the "),
-                     robberies_beat$yeartodate2021,
-                     " at this point in 2021. Here's are the numbers and rates per 100K residents for the last 12 months vs. three prior years.
+                     robberies_district$last12mos,
+                     " robberies </popuptitle><br>",
+                     " in the last 12 months in <b>",
+                     robberies_district$district,
+                     "</b>, home to an estimated ",
+                     prettyNum(robberies_district$population, big.mark=","),
+                     " people.
 <br>
 <table>      
       <tr>
@@ -314,94 +292,93 @@ robberieslabel <- paste(sep="",
 			<tr>
 				<td>2019</td>
 				<td>",
-robberies_beat$total19,
+robberies_district$total19,
 "</td>
 				<td>",
-robberies_beat$rate19,
+round(robberies_district$rate19,0),
 "</td>
 			</tr>
 			<tr>
 				<td>2020</td>
 				<td>",
-robberies_beat$total20,
+robberies_district$total20,
 "</td>
 				<td>",
-robberies_beat$rate20,
+round(robberies_district$rate20,0),
 "</td>
 			</tr>
 						<tr>
 				<td>2021</td>
 				<td>",
-robberies_beat$total21,
+robberies_district$total21,
 "</td>
 				<td>",
-robberies_beat$rate21,
+round(robberies_district$rate21,0),
 "</td>
 			</tr>
 						<tr>
 				<td>Last 12 months</td>
 				<td>",
-robberies_beat$last12mos,
+robberies_district$last12mos,
 "</td>
 				<td>",
-robberies_beat$rate_last12,
+round(robberies_district$rate_last12,0),
 "</td>
 			</tr>
 						<tr>
 				<td>3-year Average</td>
 				<td>",
-robberies_beat$avg_prior3years,
+round(robberies_district$avg_prior3years,0),
 "</td>
 				<td>",
-robberies_beat$rate_prior3years,
+round(robberies_district$rate_prior3years,0),
 "</td>
 			</tr>
 </table>")
 
-
 # Creating police beats map for types of crimes
-newyork_robberies_map <- leaflet(robberies_beat, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
+san_jose_robbery_map <- leaflet(robberies_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
   htmlwidgets::onRender("function(el, x) {
 L.control.zoom({ position: 'topright' }).addTo(this)
 }") %>%
-  setView(-73.9, 40.75, zoom = 11) %>% 
+  setView(-122.45, 37.75, zoom = 12) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
   addPolygons(color = "white", 
-              popup = robberieslabel,
+              popup = robberylabel,
               popupOptions = popupOptions(maxWidth ="200", 
                                           minWidth ="200"),
               weight = 2, 
               smoothFactor = 0.5,
               opacity = 0.6, 
               fillOpacity = 0.6,
-              fillColor = ~robberiespal1(rate_last12),
+              fillColor = ~robberypal1(rate_last12),
               group="Rate") %>% 
     addPolygons(color = "white", 
-              popup = robberieslabel,
+              popup = robberylabel,
               popupOptions = popupOptions(maxWidth ="200", 
                                           minWidth ="200"),
               weight = 2, 
               smoothFactor = 0.5,
               opacity = 0.6, 
               fillOpacity = 0.6,
-              fillColor = ~robberiespal2(last12mos),
+              fillColor = ~robberypal2(last12mos),
               group="Number") %>% 
-  addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
+    addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
     onRender("function(el, x) {
         $('input.search-input')[0].placeholder = 'Search street, place or zip code'
         }") %>%
   addLegend(opacity = 0.6,
-            values = robberies_beat$rate_last12, 
-            pal = robberiespal1,
+            values = robberies_district$rate_last12, 
+            pal = robberypal1,
             position = "bottomleft", 
-            title = paste(sep="","<popuptitle>Robbery Rate<br><popupchatter>Robberies/100K people<br>Citywide: ",robberies_city$rate_last12),
+            title = paste(sep="","<popuptitle>Robbery Rate<br><popupchatter>Robberies/100K people<br>Citywide: ",prettyNum(round(robberies_city$rate_last12,0), big.mark=",")),
             group = "Rate",
             className = "info legend Rate") %>%
   addLegend(opacity = 0.6,
-            values = robberies_beat$last12mos, 
-            pal = robberiespal2,
+            values = robberies_district$last12mos, 
+            pal = robberypal2,
             position = "bottomleft", 
-            title = paste(sep="","<popuptitle>Robberies<br><popupchatter>Total robberies<br>Citywide: ",robberies_city$last12mos),
+            title = paste(sep="","<popuptitle>Robberies<br><popupchatter>Total robberies<br>Citywide: ",prettyNum(round(robberies_city$last12mos,0), big.mark=",")),
             group = "Number",
             className = "info legend Number") %>%
   addLayersControl(
@@ -422,11 +399,20 @@ L.control.zoom({ position: 'topright' }).addTo(this)
          this.on('baselayerchange', el => updateLegend());
       }"
    )
-newyork_robberies_map
+san_jose_robbery_map
 ```
 <br>
 <br>
-<!-- <subhead>Robberies by year since 2019</subhead>  -->
+<!-- <subhead>Robberies year by year, 2019 through last month</subhead> -->
 
-<iframe title="Robberies year by year in New York" aria-label="Column Chart" id="datawrapper-chart-aLg9e" src="https://datawrapper.dwcdn.net/aLg9e/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+<iframe title="Robberies year by year in San Francisco" aria-label="Column Chart" id="datawrapper-chart-KLf8r" src="https://datawrapper.dwcdn.net/KLf8r/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
+  <br>
+<br>
+<!-- <subhead>Violent crime rate comparisons </subhead> -->
+
+<iframe title="2021 violent crime rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-QR98O" src="https://datawrapper.dwcdn.net/QR98O/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+</script>
+<br>
+<br>
+<!-- Will be adding additional contextual charting around this crime category -->

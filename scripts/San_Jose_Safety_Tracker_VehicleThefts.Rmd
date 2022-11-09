@@ -16,7 +16,6 @@ library(htmltools)
 library(sf)
 
 ```
-
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
 ![<popupchatter>Updated `r format(Sys.time(), '%B %d, %Y')` by the ABC7 Data Team</popupchatter>](https://github.com/abcotvdata/safetytracker_sanjose/raw/main/docs/banner_kgo.png)
@@ -193,8 +192,8 @@ sf_population <- 815201
 <h2>ABC7 is tracking crime and safety across San Jose and in your neighborhood. 
 
 <br>You can choose which crime to examine: <select onchange="window.location=this.value">
-<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Assaults.html">Assaults</option>
 <option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_VehicleThefts.html">Vehicle Thefts</option>
+<option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Assaults.html">Assaults</option>
 <option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Burglaries.html">Burglaries</option>
 <option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker.html">Homicides</option>
 <option value="https://abcotvdata.github.io/safetytracker_sanjose/San_Jose_Safety_Tracker_Robberies.html">Robberies</option>
@@ -209,80 +208,78 @@ sf_population <- 815201
 
 <div class="cardContainer">
 <div class="card" style="background-color:#99a0a5;">
-<p>Assaults<br>
-<bignumber>`r prettyNum(assaults_city$last12mos, big.mark=",")`<br></bignumber>
+<p>Vehicle Thefts<br>
+<bignumber>`r prettyNum(autothefts_city$last12mos, big.mark=",")`<br></bignumber>
 <p>Last 12 months<br>Through  `r format(asofdate, "%B %d")`</p>
 </div>
 <div class="card" style="background-color:#99a0a5;">
-<p>Average Assaults<br>
-<bignumber>`r prettyNum(round(assaults_city$avg_prior3years,0), big.mark=",")`<br></bignumber><p>
+<p>Average Vehicle Thefts<br>
+<bignumber>`r prettyNum(round(autothefts_city$avg_prior3years,0), big.mark=",")`<br></bignumber><p>
 Yearly average<br>2019 to 2021</p>
 </div>
 <div class="card" style="background-color:#99a0a5;">
-<p>Assault Rate<br>
-<bignumber>`r prettyNum(round(assaults_city$rate_last12,0), big.mark=",")`<br></bignumber><p>
+<p>Vehicle Theft Rate<br>
+<bignumber>`r round(autothefts_city$rate_last12,0)`<br></bignumber><p>
 Per 100,000 people<br>Last 12 months</p>
 </div>
 <div class="card" style="background-color:#99a0a5;">
-<p>Average Assault Rate<br>
-<bignumber>`r prettyNum(round(assaults_city$rate_prior3years,0), big.mark=",")`<br></bignumber><p>
+<p>Average Vehicle Theft Rate<br>
+<bignumber>`r round(autothefts_city$rate_prior3years,0)`<br></bignumber><p>
 Per 100,000 people<br>2019 to 2021</p>
 </div>
 </div>
 <br>
-Aggravated assaults over the last 12 months are <h8>`r ifelse(assaults_city$inc_prior3yearavgtolast12>=0," up"," down")` `r ifelse(assaults_city$inc_prior3yearavgtolast12>=0,assaults_city$inc_prior3yearavgtolast12,substring(assaults_city$inc_prior3yearavgtolast12,2))`%</h8> compared to the annual average over the last three years, according to the San Jose Police Department data through `r format(asofdate, "%B %d")`.
+Vehicle thefts over the last 12 months are <h8>`r ifelse(autothefts_city$inc_prior3yearavgtolast12>=0," up"," down")` `r ifelse(autothefts_city$inc_prior3yearavgtolast12>=0,autothefts_city$inc_prior3yearavgtolast12,substring(autothefts_city$inc_prior3yearavgtolast12,2))`%</h8> compared to the annual average over the last three years, according to San Jose Police Department data through `r format(asofdate, "%B %d")`.
 
-The city averaged <h8>`r prettyNum(round(assaults_city$last12mos/52,0), big.mark=",")`</h8> aggravated assaults a week over the last 12 months. In 2019, that number was <h8>`r prettyNum(round(assaults_city$total19/52,0), big.mark=",")`</h8> a week.
+The city averaged <h8>`r round(autothefts_city$last12mos/52,0)`</h8> stolen vehicles a week over the last 12 months. In 2019, that number was <h8>`r round(autothefts_city$total19/52,0)`</h8> a week.
 
-The totals include only aggravated assaults, which the city police define as someone being attacked or seriously injured by another person, whether or not they used a firearm or other weapon.
+The totals included here are for theft of a motor vehicle, and do not include thefts of parts of vehicles or thefts from vehicles.
 
-<subhead>A closer look at San Jose assaults neighborhood by neighborhood</subhead>
+<subhead>A closer look at San Jose vehicle thefts by neighborhood</subhead>
 
-The danger is not the same neighborhood to neighborhood. ABC7's data team looked at the San Jose Police Department's data by neighborhood from 2019 through `r format(asofdate, "%B %d, %Y")`.
+The risk is not the same neighborhood to neighborhood. ABC7's data team looked at the San Jose Police Department's data by neighborhood from 2019 through `r format(asofdate, "%B %d, %Y")`.
 
-The map color codes each neighborhood by the aggravated assault rate over the last 12 months. The three darker blues represent neighborhoods with assault rates that are higher than the citywide rate. You can also click the box in the bottom right corner to see neighborhoods by the number of aggravated assaults.
+The map color codes each neighborhood by the vehicle theft rate over the last 12 months. The three darker blues represent neighborhoods with vehicle theft rates that are higher than the citywide rate. You can also click the box in the bottom right corner to see neighborhoods by the number of vehicles stolen.
 
 Click on any neighborhood on the map to see detailed numbers, rates and trends. You can also search for a street name, place, landmark or zip code.
-
 <br>
-
 ```{r cars, echo=FALSE,out.width='100%',out.height='600'}
-# assault MAP
-# Set bins for numbers of crimes for assaults map
-assaultbins1 <- c(0,
-                200,
-                300,
-                500,
-                750,
-                1500)
-assaultbins2 <- c(0,
-                200,
+# autotheft MAP
+
+# Set bins for numbers of crimes for autothefts map
+autotheftbins1 <- c(0,
+                250,
                 500,
                 750,
                 1000,
-                2000)
-assaultpal1 <- colorBin(c("#99a0a5",
+                2500)
+autotheftbins2 <- c(0,
+                50,
+                100,
+                250,
+                500,
+                1200)
+autotheftpal1 <- colorBin(c("#99a0a5",
                              "#2787d6",
                              "#0058f6",
                              "#003ca6",
-                             "#00215c"), assaults_district$rate_last12, bins = assaultbins1,na.color = "#51585f")
+                             "#00215c"), autothefts_district$rate_last12, bins = autotheftbins1,na.color = "#51585f")
 
-assaultpal2 <- colorBin(c("#99a0a5",
+autotheftpal2 <- colorBin(c("#99a0a5",
                              "#2787d6",
                              "#0058f6",
                              "#003ca6",
-                             "#00215c"), assaults_district$last12mos, bins = assaultbins2,na.color = "#51585f")
+                             "#00215c"), autothefts_district$last12mos, bins = autotheftbins2,na.color = "#51585f")
 
-
-# Create quick labels for assaults map
-assaultlabel <- paste(sep="",
+# Create quick labels for autothefts map
+autotheftlabel <- paste(sep="",
                      "<popuptitle>",
-                     prettyNum(assaults_district$last12mos, big.mark=","),
-                     " assaults </popuptitle><br>",
+                     autothefts_district$last12mos,
+                     " vehicle thefts </popuptitle><br>",
                      " in the last 12 months in <b>",
-                     assaults_district$district,
+                     autothefts_district$district,
                      "</b>, home to an estimated ",
-                     prettyNum(assaults_district$population, big.mark=","),
+                     prettyNum(autothefts_district$population, big.mark=","),
                      " people.
 <br>
 <table>      
@@ -294,93 +291,93 @@ assaultlabel <- paste(sep="",
 			<tr>
 				<td>2019</td>
 				<td>",
-assaults_district$total19,
+autothefts_district$total19,
 "</td>
 				<td>",
-prettyNum(round(assaults_district$rate19,0), big.mark=","),
+prettyNum(round(autothefts_district$rate19,0),big.mark =","),
 "</td>
 			</tr>
 			<tr>
 				<td>2020</td>
 				<td>",
-assaults_district$total20,
+autothefts_district$total20,
 "</td>
 				<td>",
-prettyNum(round(assaults_district$rate20,0), big.mark=","),
+prettyNum(round(autothefts_district$rate20,0),big.mark =","),
 "</td>
 			</tr>
 						<tr>
 				<td>2021</td>
 				<td>",
-assaults_district$total21,
+autothefts_district$total21,
 "</td>
 				<td>",
-prettyNum(round(assaults_district$rate21,0), big.mark=","),
+prettyNum(round(autothefts_district$rate21,0),big.mark =","),
 "</td>
 			</tr>
 						<tr>
 				<td>Last 12 months</td>
 				<td>",
-assaults_district$last12mos,
+autothefts_district$last12mos,
 "</td>
 				<td>",
-prettyNum(round(assaults_district$rate_last12,0), big.mark=","),
+prettyNum(round(autothefts_district$rate_last12,0),big.mark =","),
 "</td>
 			</tr>
 						<tr>
 				<td>3-year Average</td>
 				<td>",
-round(assaults_district$avg_prior3years,0),
+round(autothefts_district$avg_prior3years,0),
 "</td>
 				<td>",
-prettyNum(round(assaults_district$rate_prior3years,0), big.mark=","),
+prettyNum(round(autothefts_district$rate_prior3years,0),big.mark =","),
 "</td>
 			</tr>
 </table>")
 
 # Creating police beats map for types of crimes
-san_jose_assault_map <- leaflet(assaults_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
+san_jose_autotheft_map <- leaflet(autothefts_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
   htmlwidgets::onRender("function(el, x) {
 L.control.zoom({ position: 'topright' }).addTo(this)
 }") %>%
   setView(-122.45, 37.75, zoom = 12) %>% 
   addProviderTiles(provider = "CartoDB.Positron") %>%
   addPolygons(color = "white", 
-              popup = assaultlabel,
+              popup = autotheftlabel,
               popupOptions = popupOptions(maxWidth ="200", 
                                           minWidth ="200"),
               weight = 2, 
               smoothFactor = 0.5,
               opacity = 0.6, 
               fillOpacity = 0.6,
-              fillColor = ~assaultpal1(rate_last12),
+              fillColor = ~autotheftpal1(rate_last12),
               group="Rate") %>% 
     addPolygons(color = "white", 
-              popup = assaultlabel,
+              popup = autotheftlabel,
               popupOptions = popupOptions(maxWidth ="200", 
                                           minWidth ="200"),
               weight = 2, 
               smoothFactor = 0.5,
               opacity = 0.6, 
               fillOpacity = 0.6,
-              fillColor = ~assaultpal2(last12mos),
+              fillColor = ~autotheftpal2(last12mos),
               group="Number") %>% 
-  addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
+    addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
     onRender("function(el, x) {
         $('input.search-input')[0].placeholder = 'Search street, place or zip code'
         }") %>%
   addLegend(opacity = 0.6,
-            values = assaults_district$rate_last12, 
-            pal = assaultpal1,
+            values = autothefts_district$rate_last12, 
+            pal = autotheftpal1,
             position = "bottomleft", 
-            title = paste(sep="","<popuptitle>Assault Rate<br><popupchatter>Aggravated assaults/100K people<br>Citywide: ",prettyNum(round(assaults_city$rate_last12,0), big.mark=",")),
+            title = paste(sep="","<popuptitle>Vehicle Theft Rate<br><popupchatter>Vehicle Thefts/100K people<br>Citywide: ",prettyNum(round(autothefts_city$rate_last12,0), big.mark=",")),
             group = "Rate",
             className = "info legend Rate") %>%
   addLegend(opacity = 0.6,
-            values = assaults_district$last12mos, 
-            pal = assaultpal2,
+            values = autothefts_district$last12mos, 
+            pal = autotheftpal2,
             position = "bottomleft", 
-            title = paste(sep="","<popuptitle>Assaults<br><popupchatter>Total assaults<br>Citywide: ",prettyNum(round(assaults_city$last12mos,0), big.mark=",")),
+            title = paste(sep="","<popuptitle>Vehicle Thefts<br><popupchatter>Total vehicle thefts<br>Citywide: ",prettyNum(round(autothefts_city$last12mos,0), big.mark=",")),
             group = "Number",
             className = "info legend Number") %>%
   addLayersControl(
@@ -401,20 +398,17 @@ L.control.zoom({ position: 'topright' }).addTo(this)
          this.on('baselayerchange', el => updateLegend());
       }"
    )
-san_jose_assault_map
+san_jose_autotheft_map
 ```
 <br>
 <br>
-<!-- <subhead>Assaults month by month, 2019 through last month</subhead> -->
+<!-- <subhead>Auto thefts year by year, 2019 through last month</subhead> -->
 
-<iframe title="Aggravated assaults year by year in San Francisco" aria-label="Column Chart" id="datawrapper-chart-lf68I" src="https://datawrapper.dwcdn.net/lf68I/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+<iframe title="Vehicle thefts year by year in San Francisco" aria-label="Column Chart" id="datawrapper-chart-Uat0Y" src="https://datawrapper.dwcdn.net/Uat0Y/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
   <br>
 <br>
+<!-- <subhead>Risk of property crime in major cities</subhead> -->
 
-<!-- <subhead>Risk of assault and other violent crimes in San Jose </subhead> -->
-
-<iframe title="2021 violent crime rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-QR98O" src="https://datawrapper.dwcdn.net/QR98O/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+<iframe title="2021 property crime rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-lqXu5" src="https://datawrapper.dwcdn.net/lqXu5/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
 </script>
-<br>
-<br>
