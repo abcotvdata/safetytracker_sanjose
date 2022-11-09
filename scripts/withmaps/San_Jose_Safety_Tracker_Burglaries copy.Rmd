@@ -185,8 +185,8 @@ th {
 ```
 
 ```{r population, include=FALSE}
-# set value of population
-sanjose_population <- 1014545
+# set value of sf_population
+sf_population <- 815201
 ```
 
 <h2>ABC7 is tracking crime and safety across San Jose and in your neighborhood. 
@@ -234,7 +234,173 @@ Burglaries over the last 12 months are <h8>`r ifelse(burglaries_city$inc_prior3y
 
 The city averaged <h8>`r round(burglaries_city$last12mos/52,0)`</h8> burglaries a week over the last 12 months. In 2019, that number was <h8>`r round(burglaries_city$total19/52,0)`</h8> a week.
 
-The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
+<subhead>A closer look at San Jose burglaries neighborhood by neighborhood</subhead>
+
+The risk is not the same neighborhood to neighborhood. ABC7's data team looked at the San Jose Police Department's data by neighborhood from 2019 through `r format(asofdate, "%B %d, %Y")`.
+
+The map color codes each neighborhood by the burglary rate over the last 12 months. The three darker blues represent neighborhoods with burglary rates that are higher than the citywide rate. You can also click the box in the bottom right corner to see neighborhoods by the number of burglaries.
+
+Click on any neighborhood on the map to see detailed numbers, rates and trends. You can also search for a street name, place, landmark or zip code.
+
+<br>
+```{r cars, echo=FALSE,out.width='100%',out.height='600'}
+# burglary MAP
+
+# Set bins for numbers of crimes for burglaries map
+burglarybins1 <- c(0,
+                500,
+                700,
+                850,
+                1000,
+                1200)
+burglarybins2 <- c(0,
+                   250,
+                500,
+                750,
+                1000,
+                1200)
+burglarypal1 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), burglaries_district$rate_last12, bins = burglarybins1,na.color = "#51585f")
+
+burglarypal2 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), burglaries_district$last12mos, bins = burglarybins2,na.color = "#51585f")
+
+
+# Create quick labels for burglaries map
+burglarylabel <- paste(sep="",
+                     "<popuptitle>",
+                     burglaries_district$last12mos,
+                     " burglaries </popuptitle><br>",
+                     " in the last 12 months in <b>",
+                     burglaries_district$district,
+                     "</b>, home to an estimated ",
+                     prettyNum(burglaries_district$population, big.mark=","),
+                     " people.
+<br>
+<table>      
+      <tr>
+				<th></th>
+				<th>Total</th>
+				<th>Rate</th>
+			</tr>
+			<tr>
+				<td>2019</td>
+				<td>",
+burglaries_district$total19,
+"</td>
+				<td>",
+round(burglaries_district$rate19,0),
+"</td>
+			</tr>
+			<tr>
+				<td>2020</td>
+				<td>",
+burglaries_district$total20,
+"</td>
+				<td>",
+round(burglaries_district$rate20,0),
+"</td>
+			</tr>
+						<tr>
+				<td>2021</td>
+				<td>",
+burglaries_district$total21,
+"</td>
+				<td>",
+round(burglaries_district$rate21,0),
+"</td>
+			</tr>
+						<tr>
+				<td>Last 12 months</td>
+				<td>",
+burglaries_district$last12mos,
+"</td>
+				<td>",
+round(burglaries_district$rate_last12,0),
+"</td>
+			</tr>
+						<tr>
+				<td>3-year Average</td>
+				<td>",
+round(burglaries_district$avg_prior3years,0),
+"</td>
+				<td>",
+round(burglaries_district$rate_prior3years,0),
+"</td>
+			</tr>
+</table>")
+
+# Creating police beats map for types of crimes
+san_jose_burglary_map <- leaflet(burglaries_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
+  htmlwidgets::onRender("function(el, x) {
+L.control.zoom({ position: 'topright' }).addTo(this)
+}") %>%
+  setView(-122.45, 37.75, zoom = 12) %>% 
+  addProviderTiles(provider = "CartoDB.Positron") %>%
+  addPolygons(color = "white", 
+              popup = burglarylabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~burglarypal1(rate_last12),
+              group="Rate") %>% 
+    addPolygons(color = "white", 
+              popup = burglarylabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~burglarypal2(last12mos),
+              group="Number") %>% 
+    addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
+    onRender("function(el, x) {
+        $('input.search-input')[0].placeholder = 'Search street, place or zip code'
+        }") %>%
+  addLegend(opacity = 0.6,
+            values = burglaries_district$rate_last12, 
+            pal = burglarypal1,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Burglary Rate<br><popupchatter>Burglaries/100K people<br>Citywide: ",prettyNum(round(burglaries_city$rate_last12,0), big.mark=",")),
+            group = "Rate",
+            className = "info legend Rate") %>%
+  addLegend(opacity = 0.6,
+            values = burglaries_district$last12mos, 
+            pal = burglarypal2,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Burglaries<br><popupchatter>Total burglaries<br>Citywide: ",prettyNum(round(burglaries_city$last12mos,0), big.mark=",")),
+            group = "Number",
+            className = "info legend Number") %>%
+  addLayersControl(
+    baseGroups = c("Rate","Number"),
+    options = layersControlOptions(collapsed = FALSE),
+    position = 'bottomright') %>% hideGroup(c("Number")) %>%
+   htmlwidgets::onRender("
+      function(el, x) {
+         var updateLegend = function () {
+            var selectedGroup = document.querySelectorAll('input:checked')[0].nextSibling.innerText.substr(1);
+
+            document.querySelectorAll('.legend').forEach(a => a.hidden=true);
+            document.querySelectorAll('.legend').forEach(l => {
+               if (l.classList.contains(selectedGroup)) l.hidden=false;
+            });
+         };
+         updateLegend();
+         this.on('baselayerchange', el => updateLegend());
+      }"
+   )
+san_jose_burglary_map
+```
 <br>
 <br>
 <!-- <subhead>Burglaries month by month, 2019 through last month</subhead> -->

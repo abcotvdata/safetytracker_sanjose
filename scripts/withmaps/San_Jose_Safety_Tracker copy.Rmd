@@ -185,9 +185,8 @@ th {
 ```
 
 ```{r population, include=FALSE}
-# set value of population
-sanjose_population <- 1014545
-
+# set value of sf_population
+sf_population <- 815201
 ```
 
 <br>
@@ -251,8 +250,174 @@ The risk is not the same neighborhood to neighborhood.
 
 ABC7's data team looked at the San Jose Police Department's crime incident data by police district from 2019 through `r format(asofdate, "%B %d, %Y")`. Totals here include murders, but not involuntary manslaughter or justifiable homicide.
 
-The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
+<subhead>A closer look at San Jose homicides by neighborhood</subhead>
 
+The map color codes each neighborhood by the homicide rate over the last 12 months. The three darker blues highlight neighborhoods where the murder rate is higher than the citywide rate.
+
+You can click any neighborhood to see detailed numbers or the buttons at the bottom of the map to switch between numbers and rates. You can search for a street, place, landmark or zip code to zoom to that location.
+
+<br>
+```{r cars, echo=FALSE,out.width='100%',out.height='600'}
+# MURDER MAP
+
+# Set bins for numbers of crimes for murders map
+murderbins1 <- c(0,
+                1,
+                5,
+                10,
+                15,
+                25)
+murderbins2 <- c(0,
+                1,
+                3,
+                5,
+                10,
+                20)
+murderpal1 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), murders_district$rate_last12, bins = murderbins1,na.color = "#51585f")
+
+murderpal2 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), murders_district$last12mos, bins = murderbins2,na.color = "#51585f")
+
+                            
+# Create labels for murders map
+murderlabel <- paste(sep="",
+                     "<popuptitle>",
+                     murders_district$last12mos,
+                     " homicides </popuptitle><br>",
+                     " in the last 12 months in <b>",
+                     murders_district$district,
+                     "</b>, home to an estimated ",
+                     prettyNum(murders_district$population, big.mark=","),
+                     " people.
+<br>
+<table>      
+      <tr>
+				<th></th>
+				<th>Total</th>
+				<th>Rate</th>
+			</tr>
+			<tr>
+				<td>2019</td>
+				<td>",
+murders_district$total19,
+"</td>
+				<td>",
+murders_district$rate19,
+"</td>
+			</tr>
+			<tr>
+				<td>2020</td>
+				<td>",
+murders_district$total20,
+"</td>
+				<td>",
+murders_district$rate20,
+"</td>
+			</tr>
+						<tr>
+				<td>2021</td>
+				<td>",
+murders_district$total21,
+"</td>
+				<td>",
+murders_district$rate21,
+"</td>
+			</tr>
+						<tr>
+				<td>Last 12 months</td>
+				<td>",
+murders_district$last12mos,
+"</td>
+				<td>",
+murders_district$rate_last12,
+"</td>
+			</tr>
+						<tr>
+				<td>3-year Average</td>
+				<td>",
+murders_district$avg_prior3years,
+"</td>
+				<td>",
+murders_district$rate_prior3years,
+"</td>
+			</tr>
+</table>")
+
+
+# Creating police beats map for types of crimes
+san_jose_murder_map <- leaflet(murders_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
+  htmlwidgets::onRender("function(el, x) {
+L.control.zoom({ position: 'topright' }).addTo(this)
+}") %>%
+  setView(-122.45, 37.75, zoom = 12) %>% 
+  addProviderTiles(provider = "CartoDB.Positron") %>%
+  addPolygons(color = "white", 
+              popup = murderlabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~murderpal1(rate_last12),
+              group="Rate") %>% 
+    addPolygons(color = "white", 
+              popup = murderlabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~murderpal2(last12mos),
+              group="Number") %>% 
+  addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
+    onRender("function(el, x) {
+        $('input.search-input')[0].placeholder = 'Search street, place or zip code'
+        }") %>%
+  addLegend(opacity = 0.6,
+            values = murders_district$rate_last12, 
+            pal = murderpal1,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Murder Rate<br><popupchatter>Murders/100K people<br>Citywide: ",murders_city$rate_last12),
+            group = "Rate",
+            className = "info legend Rate") %>%
+  addLegend(opacity = 0.6,
+            values = murders_district$last12mos, 
+            pal = murderpal2,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Murders<br><popupchatter>Total murders<br>Citywide: ",murders_city$last12mos),
+            group = "Number",
+            className = "info legend Number") %>%
+  addLayersControl(
+    baseGroups = c("Rate","Number"),
+    options = layersControlOptions(collapsed = FALSE),
+    position = 'bottomright') %>% hideGroup(c("Number")) %>%
+   htmlwidgets::onRender("
+      function(el, x) {
+         var updateLegend = function () {
+            var selectedGroup = document.querySelectorAll('input:checked')[0].nextSibling.innerText.substr(1);
+
+            document.querySelectorAll('.legend').forEach(a => a.hidden=true);
+            document.querySelectorAll('.legend').forEach(l => {
+               if (l.classList.contains(selectedGroup)) l.hidden=false;
+            });
+         };
+         updateLegend();
+         this.on('baselayerchange', el => updateLegend());
+      }"
+   )
+san_jose_murder_map
+```
+<br>
+<br>
 <!-- <subhead>Homicides yearly, 2018 through last 12 mos</subhead> -->
 
 <iframe title="Homicides year by year in San Francisco" aria-label="Column Chart" id="datawrapper-chart-ydu4n" src="https://datawrapper.dwcdn.net/ydu4n/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();

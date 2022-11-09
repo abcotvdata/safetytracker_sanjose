@@ -186,9 +186,8 @@ th {
 ```
 
 ```{r population, include=FALSE}
-# set value of population
-sanjose_population <- 1014545
-
+# set value of sf_population
+sf_population <- 815201
 ```
 
 <h2>ABC7 is tracking crime and safety across San Jose and in your neighborhood. 
@@ -237,7 +236,173 @@ The city averaged <h8>`r prettyNum(round(assaults_city$last12mos/52,0), big.mark
 
 The totals include only aggravated assaults, which the city police define as someone being attacked or seriously injured by another person, whether or not they used a firearm or other weapon.
 
-The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
+<subhead>A closer look at San Jose assaults neighborhood by neighborhood</subhead>
+
+The danger is not the same neighborhood to neighborhood. ABC7's data team looked at the San Jose Police Department's data by neighborhood from 2019 through `r format(asofdate, "%B %d, %Y")`.
+
+The map color codes each neighborhood by the aggravated assault rate over the last 12 months. The three darker blues represent neighborhoods with assault rates that are higher than the citywide rate. You can also click the box in the bottom right corner to see neighborhoods by the number of aggravated assaults.
+
+Click on any neighborhood on the map to see detailed numbers, rates and trends. You can also search for a street name, place, landmark or zip code.
+
+<br>
+
+```{r cars, echo=FALSE,out.width='100%',out.height='600'}
+# assault MAP
+# Set bins for numbers of crimes for assaults map
+assaultbins1 <- c(0,
+                200,
+                300,
+                500,
+                750,
+                1500)
+assaultbins2 <- c(0,
+                200,
+                500,
+                750,
+                1000,
+                2000)
+assaultpal1 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), assaults_district$rate_last12, bins = assaultbins1,na.color = "#51585f")
+
+assaultpal2 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), assaults_district$last12mos, bins = assaultbins2,na.color = "#51585f")
+
+
+# Create quick labels for assaults map
+assaultlabel <- paste(sep="",
+                     "<popuptitle>",
+                     prettyNum(assaults_district$last12mos, big.mark=","),
+                     " assaults </popuptitle><br>",
+                     " in the last 12 months in <b>",
+                     assaults_district$district,
+                     "</b>, home to an estimated ",
+                     prettyNum(assaults_district$population, big.mark=","),
+                     " people.
+<br>
+<table>      
+      <tr>
+				<th></th>
+				<th>Total</th>
+				<th>Rate</th>
+			</tr>
+			<tr>
+				<td>2019</td>
+				<td>",
+assaults_district$total19,
+"</td>
+				<td>",
+prettyNum(round(assaults_district$rate19,0), big.mark=","),
+"</td>
+			</tr>
+			<tr>
+				<td>2020</td>
+				<td>",
+assaults_district$total20,
+"</td>
+				<td>",
+prettyNum(round(assaults_district$rate20,0), big.mark=","),
+"</td>
+			</tr>
+						<tr>
+				<td>2021</td>
+				<td>",
+assaults_district$total21,
+"</td>
+				<td>",
+prettyNum(round(assaults_district$rate21,0), big.mark=","),
+"</td>
+			</tr>
+						<tr>
+				<td>Last 12 months</td>
+				<td>",
+assaults_district$last12mos,
+"</td>
+				<td>",
+prettyNum(round(assaults_district$rate_last12,0), big.mark=","),
+"</td>
+			</tr>
+						<tr>
+				<td>3-year Average</td>
+				<td>",
+round(assaults_district$avg_prior3years,0),
+"</td>
+				<td>",
+prettyNum(round(assaults_district$rate_prior3years,0), big.mark=","),
+"</td>
+			</tr>
+</table>")
+
+# Creating police beats map for types of crimes
+san_jose_assault_map <- leaflet(assaults_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
+  htmlwidgets::onRender("function(el, x) {
+L.control.zoom({ position: 'topright' }).addTo(this)
+}") %>%
+  setView(-122.45, 37.75, zoom = 12) %>% 
+  addProviderTiles(provider = "CartoDB.Positron") %>%
+  addPolygons(color = "white", 
+              popup = assaultlabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~assaultpal1(rate_last12),
+              group="Rate") %>% 
+    addPolygons(color = "white", 
+              popup = assaultlabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~assaultpal2(last12mos),
+              group="Number") %>% 
+  addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
+    onRender("function(el, x) {
+        $('input.search-input')[0].placeholder = 'Search street, place or zip code'
+        }") %>%
+  addLegend(opacity = 0.6,
+            values = assaults_district$rate_last12, 
+            pal = assaultpal1,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Assault Rate<br><popupchatter>Aggravated assaults/100K people<br>Citywide: ",prettyNum(round(assaults_city$rate_last12,0), big.mark=",")),
+            group = "Rate",
+            className = "info legend Rate") %>%
+  addLegend(opacity = 0.6,
+            values = assaults_district$last12mos, 
+            pal = assaultpal2,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Assaults<br><popupchatter>Total assaults<br>Citywide: ",prettyNum(round(assaults_city$last12mos,0), big.mark=",")),
+            group = "Number",
+            className = "info legend Number") %>%
+  addLayersControl(
+    baseGroups = c("Rate","Number"),
+    options = layersControlOptions(collapsed = FALSE),
+    position = 'bottomright') %>% hideGroup(c("Number")) %>%
+   htmlwidgets::onRender("
+      function(el, x) {
+         var updateLegend = function () {
+            var selectedGroup = document.querySelectorAll('input:checked')[0].nextSibling.innerText.substr(1);
+
+            document.querySelectorAll('.legend').forEach(a => a.hidden=true);
+            document.querySelectorAll('.legend').forEach(l => {
+               if (l.classList.contains(selectedGroup)) l.hidden=false;
+            });
+         };
+         updateLegend();
+         this.on('baselayerchange', el => updateLegend());
+      }"
+   )
+san_jose_assault_map
+```
 <br>
 <br>
 <!-- <subhead>Assaults month by month, 2019 through last month</subhead> -->

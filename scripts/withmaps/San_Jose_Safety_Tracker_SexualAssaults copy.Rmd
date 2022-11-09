@@ -235,7 +235,173 @@ Sexual assaults over the last 12 months are <h8>`r ifelse(sexassaults_city$inc_p
 
 The city averaged <h8>`r round(sexassaults_city$last12mos/52,0)`</h8> sexual assaults a week over the last 12 months. In 2019, that number was <h8>`r round(sexassaults_city$total19/52,0)`</h8> a week.
 
-The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
+<subhead>A closer look at San Jose sexual assaults neighborhood by neighborhood</subhead>
+
+The danger is not the same neighborhood to neighborhood. ABC7's data team looked at the San Jose Police Department's public data about sexual assault reports by neighborhood from 2019 through `r format(asofdate, "%B %d, %Y")`.
+
+The map color codes each neighborhood by the sexual assault rate over the last 12 months. The three darker blue areas are neighborhoods with sexual assault rates higher than the citywide rate. You can also choose to see neighborhoods by the number of reported sexual assaults.
+
+Click on any neighborhood on the map to see detailed numbers, rates and trends. You can also search for a street name, place, landmark or zip code.
+
+<br>
+
+```{r cars, echo=FALSE,out.width='100%',out.height='600'}
+# sexassault MAP
+
+# Set bins for numbers of crimes for sexassaults map
+sexassaultbins1 <- c(0,
+                15,
+                30,
+                70,
+                100,
+                200)
+sexassaultbins2 <- c(0,
+                5,
+                10,
+                25,
+                50,
+                150)
+sexassaultpal1 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), sexassaults_district$rate_last12, bins = sexassaultbins1,na.color = "#51585f")
+
+sexassaultpal2 <- colorBin(c("#99a0a5",
+                             "#2787d6",
+                             "#0058f6",
+                             "#003ca6",
+                             "#00215c"), sexassaults_district$last12mos, bins = sexassaultbins2,na.color = "#51585f")
+
+# Create quick labels for sexassaults map
+sexassaultlabel <- paste(sep="",
+                     "<popuptitle>",
+                     sexassaults_district$last12mos,
+                     " sexual assaults</popuptitle><br>",
+                     " in the last 12 months in <b>",
+                     sexassaults_district$district,
+                     "</b>, home to an estimated ",
+                     prettyNum(sexassaults_district$population, big.mark=","),
+                     " people.
+<br>
+<table>      
+      <tr>
+				<th></th>
+				<th>Total</th>
+				<th>Rate</th>
+			</tr>
+			<tr>
+				<td>2019</td>
+				<td>",
+sexassaults_district$total19,
+"</td>
+				<td>",
+sexassaults_district$rate19,
+"</td>
+			</tr>
+			<tr>
+				<td>2020</td>
+				<td>",
+sexassaults_district$total20,
+"</td>
+				<td>",
+sexassaults_district$rate20,
+"</td>
+			</tr>
+						<tr>
+				<td>2021</td>
+				<td>",
+sexassaults_district$total21,
+"</td>
+				<td>",
+sexassaults_district$rate21,
+"</td>
+			</tr>
+						<tr>
+				<td>Last 12 months</td>
+				<td>",
+sexassaults_district$last12mos,
+"</td>
+				<td>",
+sexassaults_district$rate_last12,
+"</td>
+			</tr>
+						<tr>
+				<td>3-year Average</td>
+				<td>",
+sexassaults_district$avg_prior3years,
+"</td>
+				<td>",
+sexassaults_district$rate_prior3years,
+"</td>
+			</tr>
+</table>")
+
+# Creating police beats map for types of crimes
+san_jose_sexassault_map <- leaflet(sexassaults_district, options = leafletOptions(zoomControl = FALSE, zoomSnap = 0.5, zoomDelta=0.5)) %>%
+  htmlwidgets::onRender("function(el, x) {
+L.control.zoom({ position: 'topright' }).addTo(this)
+}") %>%
+  setView(-122.45, 37.75, zoom = 12) %>% 
+  addProviderTiles(provider = "CartoDB.Positron") %>%
+  addPolygons(color = "white", 
+              popup = sexassaultlabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~sexassaultpal1(rate_last12),
+              group="Rate") %>% 
+    addPolygons(color = "white", 
+              popup = sexassaultlabel,
+              popupOptions = popupOptions(maxWidth ="200", 
+                                          minWidth ="200"),
+              weight = 2, 
+              smoothFactor = 0.5,
+              opacity = 0.6, 
+              fillOpacity = 0.6,
+              fillColor = ~sexassaultpal2(last12mos),
+              group="Number") %>% 
+    addSearchOSM(options = searchOptions(autoCollapse=FALSE, minLength = 3,zoom=13, position="topleft")) %>%
+    onRender("function(el, x) {
+        $('input.search-input')[0].placeholder = 'Search street, place or zip code'
+        }") %>%
+  addLegend(opacity = 0.6,
+            values = sexassaults_district$rate_last12, 
+            pal = sexassaultpal1,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Sexual Assault Rate<br><popupchatter>Sexual Assaults/100K people<br>Citywide: ",sexassaults_city$rate_last12),
+            group = "Rate",
+            className = "info legend Rate") %>%
+  addLegend(opacity = 0.6,
+            values = sexassaults_district$last12mos, 
+            pal = sexassaultpal2,
+            position = "bottomleft", 
+            title = paste(sep="","<popuptitle>Sexual Assaults<br><popupchatter>Total sexual assaults<br>Citywide: ",sexassaults_city$last12mos),
+            group = "Number",
+            className = "info legend Number") %>%
+  addLayersControl(
+    baseGroups = c("Rate","Number"),
+    options = layersControlOptions(collapsed = FALSE),
+    position = 'bottomright') %>% hideGroup(c("Number")) %>%
+   htmlwidgets::onRender("
+      function(el, x) {
+         var updateLegend = function () {
+            var selectedGroup = document.querySelectorAll('input:checked')[0].nextSibling.innerText.substr(1);
+
+            document.querySelectorAll('.legend').forEach(a => a.hidden=true);
+            document.querySelectorAll('.legend').forEach(l => {
+               if (l.classList.contains(selectedGroup)) l.hidden=false;
+            });
+         };
+         updateLegend();
+         this.on('baselayerchange', el => updateLegend());
+      }"
+   )
+san_jose_sexassault_map
+```
 <br>
 <br>
 <!-- <subhead>Sexual assaults month by month, 2019 through last month</subhead> -->
