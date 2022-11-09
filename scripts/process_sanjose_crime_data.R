@@ -7,20 +7,24 @@ library(XML)
 library(sf)
 library(zoo)
 
-# scrape the month by month table from SJPD web site
+
 # OPEN WORK: Set a cron to do this twice a week, week 2 and 3 of month
+
+# scrape the month by month table from SJPD web site
 sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
 sanjose_scrape <- sjurl %>%
   read_html() %>%
   html_nodes(xpath='//*[@id="widget_4_178_353"]/table[1]') %>%
   html_table()
 sj_crime_recent <- sanjose_scrape[[1]]
+
 # scrape ytd second table from same page
 sanjose_scrape <- sjurl %>%
   read_html() %>%
   html_nodes(xpath='//*[@id="widget_4_178_353"]/table[2]') %>%
   html_table()
 sj_crime_ytd <- sanjose_scrape[[1]]
+
 # scrape annual table from a separate page
 sj_url2 <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-annual"
 sanjose_scrape <- sj_url2 %>%
@@ -28,44 +32,50 @@ sanjose_scrape <- sj_url2 %>%
   html_nodes(xpath='//*[@id="widget_343_190_351"]/table[4]') %>%
   html_table()
 sj_crime_annual <- sanjose_scrape[[1]]
-# OPEN WORK: They publish rates on this same site; grabbing to compare
+
+# They publish rates on this same site; grabbing for reference/compare
 sanjose_scrape <- sj_url2 %>%
   read_html() %>%
   html_nodes(xpath='//*[@id="widget_343_190_351"]/table[5]') %>%
   html_table()
 sj_crime_rates <- sanjose_scrape[[1]]
+
 # SJPD keeps some additional dashboards here for reference
 # https://www.sjpd.org/records/crime-stats-maps/police-dashboards
 
 
+### OPEN WORK TO PROCESS THESE FILES INTO SAN JOSE CRIME FILE FOR TRACKER
 
+sj_crime <- as.data.frame(t(sj_crime_annual))
+row.names(sj_crime)=NULL 
+names(sj_crime) <- c("category","total12","total13","total14","total15","total16","total17","total18","total19","total20","total21")
+sj_crime <- sj_crime[-1,]
 
-# load RDS for the annual and the latest weekly
-recent_crime_all <- readRDS("scripts/rds/oakland_crime_recent.rds")
-annual_crime_all <- readRDS("scripts/rds/oakland_crime_annual.rds")
+sj_crime$category <- case_when(str_detect(sj_crime$category, "Aggravated") ~ "Aggravated Assault",
+                               str_detect(sj_crime$category, "Vehicle") ~ "Vehicle Theft",
+                               TRUE ~ sj_crime$category)
+sj_crime <- sj_crime %>% filter(category %in% c("Homicide","Rape","Robbery","Aggravated Assault",
+                                                "Burglary","Larceny","Vehicle Theft"))
 
-# join the two files
-oakland_crime <- left_join(annual_crime_all,recent_crime_all %>% select(4,5,9,10,12),
-                           by=c("description"="description","district"="district")) 
 
 # Extract the last 12 months into a new column
-oakland_crime$last12mos <- (oakland_crime$total21-oakland_crime$ytd21)+oakland_crime$ytd22
-oakland_crime <- oakland_crime %>% select(7:9,1:6,11,10,13,12)
+sanjose_crime$last12mos <- (sanjose_crime$total21-sanjose_crime$ytd21)+sanjose_crime$ytd22
+sanjose_crime <- sanjose_crime %>% select(7:9,1:6,11,10,13,12)
 
 # write csv of Oakland crime as a backup
 # worthwhile to think through if the full csv is even necessary to save; maybe for redundancy
-write_csv(oakland_crime,"data/output/oakland_crime.csv")
+write_csv(sanjose_crime,"data/output/sanjose_crime.csv")
 
 # Set variable of Chicago population
 # likely needs added to the tracker itself
-oakland_population <- 433823
+sanjose_population <- 1014545
 
 # San Francisco police districts geo file with populations
-districts_geo <- readRDS("scripts/rds/oakland_districts.rds")
+districts_geo <- readRDS("scripts/rds/sanjose_districts.rds")
 
 # Divide into citywide_crime and district_crime files
-citywide_crime <- oakland_crime %>% filter(district=="Citywide")
-district_crime <- oakland_crime %>% filter(district!="Citywide")
+citywide_crime <- sanjose_crime %>% filter(district=="Citywide")
+district_crime <- sanjose_crime %>% filter(district!="Citywide")
 
 # add zeros where there were no crimes tallied that year
 #citywide_crime[is.na(citywide_crime)] <- 0
@@ -126,13 +136,13 @@ citywide_crime$inc_19tolast12 <- round(citywide_crime$last12mos/citywide_crime$t
 citywide_crime$inc_21tolast12 <- round(citywide_crime$last12mos/citywide_crime$total21*100-100,1)
 citywide_crime$inc_prior3yearavgtolast12 <- round((citywide_crime$last12mos/citywide_crime$avg_prior3years)*100-100,0)
 # add crime rates for each year
-citywide_crime$rate19 <- round((citywide_crime$total19/oakland_population)*100000,1)
-citywide_crime$rate20 <- round((citywide_crime$total20/oakland_population)*100000,1)
-citywide_crime$rate21 <- round((citywide_crime$total21/oakland_population)*100000,1)
-citywide_crime$rate_last12 <- round((citywide_crime$last12mos/oakland_population)*100000,1)
+citywide_crime$rate19 <- round((citywide_crime$total19/sanjose_population)*100000,1)
+citywide_crime$rate20 <- round((citywide_crime$total20/sanjose_population)*100000,1)
+citywide_crime$rate21 <- round((citywide_crime$total21/sanjose_population)*100000,1)
+citywide_crime$rate_last12 <- round((citywide_crime$last12mos/sanjose_population)*100000,1)
 # 3 yr rate
 citywide_crime$rate_prior3years <- 
-  round((citywide_crime$avg_prior3years/oakland_population)*100000,1)
+  round((citywide_crime$avg_prior3years/sanjose_population)*100000,1)
 # for map/table making purposes, changing Inf and NaN in calc fields to NA
 citywide_crime <- citywide_crime %>%
   mutate(across(where(is.numeric), ~na_if(., Inf)))
