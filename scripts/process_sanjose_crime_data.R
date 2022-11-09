@@ -7,6 +7,39 @@ library(XML)
 library(sf)
 library(zoo)
 
+# scrape the month by month table from SJPD web site
+# OPEN WORK: Set a cron to do this twice a week, week 2 and 3 of month
+sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
+sanjose_scrape <- sjurl %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="widget_4_178_353"]/table[1]') %>%
+  html_table()
+sj_crime_recent <- sanjose_scrape[[1]]
+# scrape ytd second table from same page
+sanjose_scrape <- sjurl %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="widget_4_178_353"]/table[2]') %>%
+  html_table()
+sj_crime_ytd <- sanjose_scrape[[1]]
+# scrape annual table from a separate page
+sj_url2 <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-annual"
+sanjose_scrape <- sj_url2 %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="widget_343_190_351"]/table[4]') %>%
+  html_table()
+sj_crime_annual <- sanjose_scrape[[1]]
+# OPEN WORK: They publish rates on this same site; grabbing to compare
+sanjose_scrape <- sj_url2 %>%
+  read_html() %>%
+  html_nodes(xpath='//*[@id="widget_343_190_351"]/table[5]') %>%
+  html_table()
+sj_crime_rates <- sanjose_scrape[[1]]
+# SJPD keeps some additional dashboards here for reference
+# https://www.sjpd.org/records/crime-stats-maps/police-dashboards
+
+
+
+
 # load RDS for the annual and the latest weekly
 recent_crime_all <- readRDS("scripts/rds/oakland_crime_recent.rds")
 annual_crime_all <- readRDS("scripts/rds/oakland_crime_annual.rds")
