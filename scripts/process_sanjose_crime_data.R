@@ -150,7 +150,7 @@ write_csv(citywide_yearly,"data/output/yearly/citywide_yearly.csv")
 
 # Now make individual crime files for trackers
 murders_city <- citywide_crime %>% filter(category=="Homicide")
-sexassaults_city <- citywide_crime %>% filter(category=="Sexual Assault")
+sexassaults_city <- citywide_crime %>% filter(category=="Rape")
 robberies_city <- citywide_crime %>% filter(category=="Robbery")
 assaults_city <- citywide_crime %>% filter(category=="Aggravated Assault")
 burglaries_city <- citywide_crime %>% filter(category=="Burglary")

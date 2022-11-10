@@ -244,8 +244,8 @@ One way to think about the danger: three years ago, the murder rate was <h8>`r m
 <br>
 <!-- <subhead>Risk of being murdered in San Jose vs. other causes of death in Harris County</subhead> -->
 
-<iframe title="Risk of homicide in San Francisco vs. other causes of death" aria-label="Bar Chart" id="datawrapper-chart-pvQo6" src="https://datawrapper.dwcdn.net/pvQo6/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="402" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
-</script>
+<iframe title="Risk of homicide in San Jose vs. other causes of death" aria-label="Bar Chart" id="datawrapper-chart-hxL17" src="https://datawrapper.dwcdn.net/hxL17/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="402" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
+<br>
 
 The risk is not the same neighborhood to neighborhood.
 
@@ -255,8 +255,7 @@ The San Jose Police Department does not release crime data broken down by more d
 
 <!-- <subhead>Homicides yearly, 2018 through last 12 mos</subhead> -->
 
-<iframe title="Homicides year by year in San Francisco" aria-label="Column Chart" id="datawrapper-chart-ydu4n" src="https://datawrapper.dwcdn.net/ydu4n/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
-</script>
+<iframe title="Homicides year by year in San Jose" aria-label="Column Chart" id="datawrapper-chart-f1g9e" src="https://datawrapper.dwcdn.net/f1g9e/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
 
   <br>
 <br>
@@ -276,5 +275,4 @@ The San Jose Police Department does not release crime data broken down by more d
 
 <!-- <subhead> comparison to other cities chart </subhead> -->
 
-<iframe title="2021 homicide rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-0Z5eV" src="https://datawrapper.dwcdn.net/0Z5eV/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436"  data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
-</script>
+<iframe title="2021 homicide rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-o5RMh" src="https://datawrapper.dwcdn.net/o5RMh/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
