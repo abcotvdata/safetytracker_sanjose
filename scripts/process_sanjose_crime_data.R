@@ -129,7 +129,7 @@ citywide_crime$avg_prior3years <- round(((citywide_crime$total19+
 citywide_crime$inc_19to21 <- round(citywide_crime$total21/citywide_crime$total19*100-100,1)
 citywide_crime$inc_19tolast12 <- round(citywide_crime$last12mos/citywide_crime$total19*100-100,1)
 citywide_crime$inc_21tolast12 <- round(citywide_crime$last12mos/citywide_crime$total21*100-100,1)
-citywide_crime$inc_prior3yearavgtolast12 <- round((citywide_crime$last12mos/citywide_crime$avg_prior3years)*100-100,0)
+citywide_crime$inc_prior3yearavgtolast12 <- round((citywide_crime$last12mos/citywide_crime$avg_prior3years)*100-100,1)
 # add crime rates for each year
 citywide_crime$rate19 <- round((citywide_crime$total19/sanjose_population)*100000,1)
 citywide_crime$rate20 <- round((citywide_crime$total20/sanjose_population)*100000,1)
