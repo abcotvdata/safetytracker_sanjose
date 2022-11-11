@@ -235,7 +235,7 @@ The city averaged <h8>`r round(autothefts_city$last12mos/52,0)`</h8> stolen vehi
 
 The totals included here are for theft of a motor vehicle, and do not include thefts of parts of vehicles or thefts from vehicles.
 
-The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
+The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas. The city police does release police reports and requests for service, but that data often includes calls or reports that are not equivalent to crimes. Therefore, this data is not reliable for showing the level of crime in local neighborhoods.
 <br>
 <br>
 <!-- <subhead>Auto thefts year by year, 2019 through last month</subhead> -->
