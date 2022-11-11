@@ -237,14 +237,15 @@ However, the murder rate over the last 12 months is <h8>`r case_when((murders_ci
           (murders_city$rate_last12-murders_city$rate_prior3years)<=-0.25 ~ "down",
           TRUE ~ "about the same ")`</h8> compared to the annual average over the last three years, and the frequency of killings remains higher than it was before the pandemic.
 
-The city averaged <h8>`r round(murders_city$last12mos/52,0)`</h8> homicides a week over the last 12 months.
+The city averaged <h8>`r round(murders_city$last12mos/12,1)`</h8> homicides a month over the last 12 months. In 2019, that number was <h8>`r round(murders_city$total19/12,1)`</h8> a month.
 
-One way to think about the danger: three years ago, the murder rate was <h8>`r murders_city$rate19`</h8> per 100,000 residents. That's less than half the risk of dying in a vehicle crash in California. The rate has risen slightly to <h8>`r murders_city$rate_last12`</h8> in the last 12 months.
+One way to think about the danger: three years ago, the murder rate was <h8>`r murders_city$rate19`</h8> per 100,000 residents. That's far less than the risk of dying in a vehicle crash in California. The rate has fallen slightly to <h8>`r murders_city$rate_last12`</h8> in the last 12 months.
 <br>
 <br>
 <!-- <subhead>Risk of being murdered in San Jose vs. other causes of death in Harris County</subhead> -->
 
-<iframe title="Risk of homicide in San Jose vs. other causes of death" aria-label="Bar Chart" id="datawrapper-chart-hxL17" src="https://datawrapper.dwcdn.net/hxL17/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="402" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
+<iframe title="Risk of homicide in San Jose vs. other causes of death" aria-label="Bar Chart" id="datawrapper-chart-hxL17" src="https://datawrapper.dwcdn.net/hxL17/3/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="402" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
+</script>
 <br>
 
 The risk is not the same neighborhood to neighborhood.
