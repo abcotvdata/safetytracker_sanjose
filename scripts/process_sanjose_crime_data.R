@@ -149,15 +149,12 @@ citywide_yearly <- citywide_crime %>% select(1:11,14)
 
 # add additional years from state archive of reported ucr crimes back to 2000
 yearly_archive <- read_csv("data/source/annual/sj_annual_state.csv")
-# yearly_archive$category <- ifelse(yearly_archive$category=="Homicide","Murder",yearly_archive$category)
+yearly_archive$category <- ifelse(yearly_archive$category=="Motor Vehicle Theft","Vehicle Theft",yearly_archive$category)
 # yearly_archive$category <- ifelse(yearly_archive$category=="Rape","Sexual Assault",yearly_archive$category)
 citywide_yearly <- right_join(citywide_yearly,yearly_archive %>% select(1:12,23),by="category") %>% 
   select(1,13:24,2:12)
 # save for annual charts  
 write_csv(citywide_yearly,"data/output/yearly/citywide_yearly.csv")
-
-
-
 
 # Now make individual crime files for trackers
 murders_city <- citywide_crime %>% filter(category=="Homicide")
@@ -195,7 +192,7 @@ saveRDS(autothefts_city,"scripts/rds/autothefts_city.rds")
 ### Some tables for charts for our pages
 citywide_yearly %>% filter(category=="Homicide") %>% write_csv("data/output/yearly/murders_city.csv")
 citywide_yearly %>% filter(category=="Rape") %>%  write_csv("data/output/yearly/sexassaults_city.csv")
-citywide_yearly %>% filter(category=="Motor Vehicle Theft") %>%  write_csv("data/output/yearly/autothefts_city.csv")
+citywide_yearly %>% filter(category=="Vehicle Theft") %>%  write_csv("data/output/yearly/autothefts_city.csv")
 citywide_yearly %>% filter(category=="Larceny") %>%  write_csv("data/output/yearly/thefts_city.csv")
 citywide_yearly %>% filter(category=="Burglary") %>%  write_csv("data/output/yearly/burglaries_city.csv")
 citywide_yearly %>% filter(category=="Robbery") %>%  write_csv("data/output/yearly/robberies_city.csv")
