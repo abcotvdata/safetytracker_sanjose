@@ -236,6 +236,8 @@ Thefts over the last 12 months are <h8>`r ifelse(thefts_city$inc_prior3yearavgto
 
 The city averaged <h8>`r prettyNum(round(thefts_city$last12mos/52,0), big.mark=",")`</h8> thefts a week over the last 12 months. In 2019, that number was <h8>`r prettyNum(round(thefts_city$total19/52,0), big.mark=",")`</h8> a week.
 
+Theft totals here are for larceny, which would include stealing items worth $1,000 or more. The totals also would not include those involving violence, which would be defined as robbery. So someone taking an expensive smartphone from someone's bag would be theft, taking it while pointing a firearm at the person would be instead counted as robbery.
+
 The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
 <br>
 <br>

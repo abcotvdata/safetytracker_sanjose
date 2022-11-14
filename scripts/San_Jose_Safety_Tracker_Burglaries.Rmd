@@ -234,6 +234,8 @@ Burglaries over the last 12 months are <h8>`r ifelse(burglaries_city$inc_prior3y
 
 The city averaged <h8>`r round(burglaries_city$last12mos/52,0)`</h8> burglaries a week over the last 12 months. In 2019, that number was <h8>`r round(burglaries_city$total19/52,0)`</h8> a week.
 
+Police generally define burglary as someone illegally entering a home, business or vehicle to steal something of value or commit some other felony.
+
 The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
 <br>
 <br>
