@@ -254,17 +254,13 @@ The San Jose Police Department does not release crime data broken down by more d
 <br>
 <br>
 <!-- <subhead>Homicides yearly, 2018 through last 12 mos</subhead> -->
-<br>
 <iframe title="Homicides year by year in San Jose" aria-label="Column Chart" id="datawrapper-chart-f1g9e" src="https://datawrapper.dwcdn.net/f1g9e/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
 <br>
 <br>
-<!-- <subhead>What time of day do murders happen?</subhead> -->
-
-<!-- <iframe title="What time of day do murders happen?" aria-label="Donut Chart" id="datawrapper-chart-j0udh" src="https://datawrapper.dwcdn.net/j0udh/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="432" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();
-</script>
+<iframe title="Homicide clearance rate year by year in San Jose" aria-label="Column Chart" id="datawrapper-chart-wC1uC" src="https://datawrapper.dwcdn.net/wC1uC/5/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="538" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
 <br>
-<br>  -->
-
+<br>
 <!-- <subhead> comparison to other cities chart </subhead> -->
-
 <iframe title="2021 homicide rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-o5RMh" src="https://datawrapper.dwcdn.net/o5RMh/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
+<br>
+<br>

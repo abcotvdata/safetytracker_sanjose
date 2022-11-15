@@ -243,11 +243,12 @@ The San Jose Police Department does not release crime data broken down by more d
 <!-- <subhead>Assaults month by month, 2019 through last month</subhead> -->
 
 <iframe title="Aggravated assaults year by year in San Jose" aria-label="Column Chart" id="datawrapper-chart-xbATI" src="https://datawrapper.dwcdn.net/xbATI/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="400" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
-  <br>
 <br>
-
+<br>
+<iframe title="Aggravated assault clearance rate year by year in San Jose" aria-label="Column Chart" id="datawrapper-chart-tMFBb" src="https://datawrapper.dwcdn.net/tMFBb/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="538" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
+<br>
+<br>
 <!-- <subhead>Risk of assault and other violent crimes in San Jose </subhead> -->
-
 <iframe title="2021 violent crime rate comparison in select major cities" aria-label="Bar Chart" id="datawrapper-chart-bTatn" src="https://datawrapper.dwcdn.net/bTatn/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="436" data-external="1"></iframe><script type="text/javascript">!function(){"use strict";window.addEventListener("message",(function(e){if(void 0!==e.data["datawrapper-height"]){var t=document.querySelectorAll("iframe");for(var a in e.data["datawrapper-height"])for(var r=0;r<t.length;r++){if(t[r].contentWindow===e.source)t[r].style.height=e.data["datawrapper-height"][a]+"px"}}}))}();</script>
 <br>
 <br>
