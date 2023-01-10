@@ -10,7 +10,7 @@ library(zoo)
 
 # OPEN WORK: Set a cron to do this twice a week, week 2 and 3 of month
 # OCTOBER DATA POSTED IN LATE NOVEMBER
-# NOVEMBER DATA POSTED IN LATE TEENS IN DECEMBER
+# DEC DATA NOT THERE AS OF JAN 10th
 
 # scrape the month by month table from SJPD web site
 sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
