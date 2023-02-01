@@ -142,9 +142,9 @@ citywide_crime$rate_prior3years <-
   round((citywide_crime$avg_prior3years/sanjose_population)*100000,1)
 # for map/table making purposes, changing Inf and NaN in calc fields to NA
 citywide_crime <- citywide_crime %>%
-  mutate(across(where(is.numeric), ~na_if(., Inf)))
+  mutate_if(is.numeric, ~ifelse(. == Inf, NA, .))
 citywide_crime <- citywide_crime %>%
-  mutate(across(where(is.numeric), ~na_if(., "NaN")))
+  mutate_if(is.numeric, ~ifelse(. == "NaN", NA, .))
 
 # create a quick long-term annual table
 citywide_yearly <- citywide_crime %>% select(1:11,14)
