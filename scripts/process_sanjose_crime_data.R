@@ -11,6 +11,8 @@ library(zoo)
 # OPEN WORK: Set a cron to do this twice a week, week 2 and 3 of month
 # OCTOBER DATA POSTED IN LATE NOVEMBER
 # DEC DATA NOT THERE AS OF JAN 10th
+# JAN DATA NOT THERE AS OF FEB 21st
+# JAN DATA WAS THERE AS OF FEB 28th
 
 # scrape the month by month table from SJPD web site
 sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
@@ -87,11 +89,11 @@ sj_crime <- left_join(sj_crime,sj_crime_ytd,by="category")
 # Extract the last 12 months into a new column
 sj_crime$last12mos <- (sj_crime$total21-sj_crime$ytd21)+sj_crime$ytd22
 
-# write csv of Oakland crime as a backup
+# write csv of SJ crime as a backup
 # worthwhile to think through if the full csv is even necessary to save; maybe for redundancy
 write_csv(sj_crime,"data/output/sj_crime.csv")
 
-# Set variable of Chicago population
+# Set variable of city population
 # likely needs added to the tracker itself
 sanjose_population <- 1014545
 
