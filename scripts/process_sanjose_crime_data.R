@@ -165,7 +165,7 @@ yearly_archive <- read_csv("data/source/annual/sj_annual_state.csv")
 yearly_archive$category <- ifelse(yearly_archive$category=="Motor Vehicle Theft","Vehicle Theft",yearly_archive$category)
 # yearly_archive$category <- ifelse(yearly_archive$category=="Rape","Sexual Assault",yearly_archive$category)
 citywide_yearly <- right_join(citywide_yearly,yearly_archive %>% select(1:12,23),by="category") %>% 
-  select(1,13:24,2:12)
+  select(1,14:25,2:13)
 # save for annual charts  
 write_csv(citywide_yearly,"data/output/yearly/citywide_yearly.csv")
 
