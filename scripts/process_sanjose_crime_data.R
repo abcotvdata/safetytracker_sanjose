@@ -73,21 +73,29 @@ sj_crime$total19 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total19))
 sj_crime$total20 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total20))
 sj_crime$total21 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total21))
 
+# bring in 2022 for now; will fix once the annual page is updated
+# and this section can be commented until turn of year in january
+sj_annual_2022 <- read_csv("data/source/annual/sj_annual_2022.csv", 
+                           col_types = cols(ytd21 = col_skip())) %>%
+  rename("total22"="ytd22")
+sj_crime <- left_join(sj_crime,sj_annual_2022,by="category")
+
 # clean up two ytd columns to add to this
-names(sj_crime_ytd) <- c("category","ytd22","ytd21","change")
+names(sj_crime_ytd) <- c("category","ytd23","ytd22","change")
 sj_crime_ytd <- sj_crime_ytd %>% 
   filter(category %in% c("Homicide","Rape","Robbery",
                          "Aggravated Assault","Burglary",
                          "Larceny","Vehicle Theft")) %>%
   select(1:3)
 sj_crime_ytd$ytd22 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd22))
-sj_crime_ytd$ytd21 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd21))
+sj_crime_ytd$ytd23 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd23))
+
 
 # merge cols into main sj_crime table
 sj_crime <- left_join(sj_crime,sj_crime_ytd,by="category")
 
 # Extract the last 12 months into a new column
-sj_crime$last12mos <- (sj_crime$total21-sj_crime$ytd21)+sj_crime$ytd22
+sj_crime$last12mos <- (sj_crime$total22-sj_crime$ytd22)+sj_crime$ytd23
 
 # write csv of SJ crime as a backup
 # worthwhile to think through if the full csv is even necessary to save; maybe for redundancy
@@ -111,7 +119,7 @@ sanjose_population <- 1014545
 datecalc <- sj_crime_recent %>% summarise_all(~ sum(is.na(.)))
 datecalc$empty_months <- rowSums(datecalc == 12)
 datecalc$month_number <- 12-datecalc$empty_months
-datecalc$date <- paste0(datecalc$month_number,"/2022")
+datecalc$date <- paste0(datecalc$month_number,"/2023")
 datecalc$date <- lubridate::my(datecalc$date)
 datecalc$asofdate <- (lubridate::ceiling_date(datecalc$date,unit = "month"))-1
 asofdate <- datecalc$asofdate
@@ -123,21 +131,22 @@ saveRDS(asofdate,"scripts/rds/asofdate.rds")
 citywide_crime <- sj_crime
 
 # add 3-year annualized averages
-citywide_crime$total_prior3years <- citywide_crime$total19+
-  citywide_crime$total20+
-  citywide_crime$total21
-citywide_crime$avg_prior3years <- round(((citywide_crime$total19+
-                                            citywide_crime$total20+
-                                            citywide_crime$total21)/3),1)
+citywide_crime$total_prior3years <- citywide_crime$total20+
+  citywide_crime$total21+
+  citywide_crime$total22
+citywide_crime$avg_prior3years <- round(((citywide_crime$total20+
+                                            citywide_crime$total21+
+                                            citywide_crime$total22)/3),1)
 # now add the increases or change percentages
-citywide_crime$inc_19to21 <- round(citywide_crime$total21/citywide_crime$total19*100-100,1)
+citywide_crime$inc_19to22 <- round(citywide_crime$total22/citywide_crime$total19*100-100,1)
 citywide_crime$inc_19tolast12 <- round(citywide_crime$last12mos/citywide_crime$total19*100-100,1)
-citywide_crime$inc_21tolast12 <- round(citywide_crime$last12mos/citywide_crime$total21*100-100,1)
+citywide_crime$inc_22tolast12 <- round(citywide_crime$last12mos/citywide_crime$total22*100-100,1)
 citywide_crime$inc_prior3yearavgtolast12 <- round((citywide_crime$last12mos/citywide_crime$avg_prior3years)*100-100,1)
 # add crime rates for each year
 citywide_crime$rate19 <- round((citywide_crime$total19/sanjose_population)*100000,1)
 citywide_crime$rate20 <- round((citywide_crime$total20/sanjose_population)*100000,1)
 citywide_crime$rate21 <- round((citywide_crime$total21/sanjose_population)*100000,1)
+citywide_crime$rate22 <- round((citywide_crime$total22/sanjose_population)*100000,1)
 citywide_crime$rate_last12 <- round((citywide_crime$last12mos/sanjose_population)*100000,1)
 # 3 yr rate
 citywide_crime$rate_prior3years <- 
@@ -149,7 +158,7 @@ citywide_crime <- citywide_crime %>%
   mutate_if(is.numeric, ~ifelse(. == "NaN", NA, .))
 
 # create a quick long-term annual table
-citywide_yearly <- citywide_crime %>% select(1:11,14)
+citywide_yearly <- citywide_crime %>% select(1:12,15)
 
 # add additional years from state archive of reported ucr crimes back to 2000
 yearly_archive <- read_csv("data/source/annual/sj_annual_state.csv")
