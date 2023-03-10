@@ -52,7 +52,7 @@ sj_crime_rates <- sanjose_scrape[[1]]
 
 sj_crime <- as.data.frame(t(sj_crime_annual))
 row.names(sj_crime)=NULL 
-names(sj_crime) <- c("category","total12","total13","total14","total15","total16","total17","total18","total19","total20","total21")
+names(sj_crime) <- c("category","total13","total14","total15","total16","total17","total18","total19","total20","total21","total22")
 sj_crime <- sj_crime[-1,]
 sj_crime$category <- case_when(str_detect(sj_crime$category, "Aggravated") ~ "Aggravated Assault",
                                str_detect(sj_crime$category, "Vehicle") ~ "Vehicle Theft",
@@ -62,7 +62,6 @@ sj_crime <- sj_crime %>% filter(category %in% c("Homicide","Rape","Robbery","Agg
 # clean up
 # remove stray period and then other stray characters throughout
 sj_crime$total17 <- gsub("[.]", "", sj_crime$total17)
-sj_crime$total12 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total12))
 sj_crime$total13 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total13))
 sj_crime$total14 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total14))
 sj_crime$total15 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total15))
@@ -72,24 +71,29 @@ sj_crime$total18 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total18))
 sj_crime$total19 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total19))
 sj_crime$total20 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total20))
 sj_crime$total21 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total21))
+sj_crime$total22 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total22))
 
 # bring in 2022 for now; will fix once the annual page is updated
 # and this section can be commented until turn of year in january
-sj_annual_2022 <- read_csv("data/source/annual/sj_annual_2022.csv", 
-                           col_types = cols(ytd21 = col_skip())) %>%
-  rename("total22"="ytd22")
-sj_crime <- left_join(sj_crime,sj_annual_2022,by="category")
+# sj_annual_2022 <- read_csv("data/source/annual/sj_annual_2022.csv", 
+#                           col_types = cols(ytd21 = col_skip())) %>%
+#  rename("total22"="ytd22")
+# sj_crime <- left_join(sj_crime,sj_annual_2022,by="category")
 
 # clean up two ytd columns to add to this
 names(sj_crime_ytd) <- c("category","ytd23","ytd22","change")
 sj_crime_ytd <- sj_crime_ytd %>% 
   filter(category %in% c("Homicide","Rape","Robbery",
                          "Aggravated Assault","Burglary",
-                         "Larceny","Vehicle Theft")) %>%
-  select(1:3)
+                         "Larceny","Vehicle Theft")) %>% select(1:3)
 sj_crime_ytd$ytd22 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd22))
 sj_crime_ytd$ytd23 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd23))
 
+# remove stray period and then other stray characters throughout
+sj_crime_ytd$ytd22 <- gsub("[.]", "", sj_crime_ytd$ytd22)
+sj_crime_ytd$ytd23 <- gsub("[.]", "", sj_crime_ytd$ytd23)
+sj_crime_ytd$ytd22 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd22))
+sj_crime_ytd$ytd23 <- as.numeric(gsub("[^0-9.-]", "", sj_crime_ytd$ytd23))
 
 # merge cols into main sj_crime table
 sj_crime <- left_join(sj_crime,sj_crime_ytd,by="category")
@@ -134,9 +138,8 @@ citywide_crime <- sj_crime
 citywide_crime$total_prior3years <- citywide_crime$total20+
   citywide_crime$total21+
   citywide_crime$total22
-citywide_crime$avg_prior3years <- round(((citywide_crime$total20+
-                                            citywide_crime$total21+
-                                            citywide_crime$total22)/3),1)
+citywide_crime$avg_prior3years <- round((citywide_crime$total_prior3years/3),1)
+
 # now add the increases or change percentages
 citywide_crime$inc_19to22 <- round(citywide_crime$total22/citywide_crime$total19*100-100,1)
 citywide_crime$inc_19tolast12 <- round(citywide_crime$last12mos/citywide_crime$total19*100-100,1)
@@ -158,7 +161,7 @@ citywide_crime <- citywide_crime %>%
   mutate_if(is.numeric, ~ifelse(. == "NaN", NA, .))
 
 # create a quick long-term annual table
-citywide_yearly <- citywide_crime %>% select(1:12,15)
+citywide_yearly <- citywide_crime %>% select(1:11,14)
 
 # add additional years from state archive of reported ucr crimes back to 2000
 yearly_archive <- read_csv("data/source/annual/sj_annual_state.csv")
