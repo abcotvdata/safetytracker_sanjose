@@ -7,7 +7,6 @@ library(XML)
 library(sf)
 library(zoo)
 
-
 # OPEN WORK: Set a cron to do this twice a week, week 2 and 3 of month
 # OCTOBER DATA POSTED IN LATE NOVEMBER
 # DEC DATA NOT THERE AS OF JAN 10th
@@ -38,18 +37,17 @@ sanjose_scrape <- sj_url2 %>%
 sj_crime_annual <- sanjose_scrape[[1]]
 
 # They publish rates on this same site; grabbing for reference/compare
-sanjose_scrape <- sj_url2 %>%
-  read_html() %>%
-  html_nodes(xpath='//*[@id="widget_343_190_351"]/table[5]') %>%
-  html_table()
-sj_crime_rates <- sanjose_scrape[[1]]
+#sanjose_scrape <- sj_url2 %>%
+#  read_html() %>%
+#  html_nodes(xpath='//*[@id="widget_343_190_351"]/table[5]') %>%
+#  html_table()
+#sj_crime_rates <- sanjose_scrape[[1]]
 
 # SJPD keeps some additional dashboards here for reference
 # https://www.sjpd.org/records/crime-stats-maps/police-dashboards
 
 
-### OPEN WORK TO PROCESS THESE FILES INTO SAN JOSE CRIME FILE FOR TRACKER
-
+# Reshape and clean data for use in trackers and dw graphics
 sj_crime <- as.data.frame(t(sj_crime_annual))
 row.names(sj_crime)=NULL 
 names(sj_crime) <- c("category","total13","total14","total15","total16","total17","total18","total19","total20","total21","total22")
@@ -167,8 +165,8 @@ citywide_yearly <- citywide_crime %>% select(1:11,14)
 yearly_archive <- read_csv("data/source/annual/sj_annual_state.csv")
 yearly_archive$category <- ifelse(yearly_archive$category=="Motor Vehicle Theft","Vehicle Theft",yearly_archive$category)
 # yearly_archive$category <- ifelse(yearly_archive$category=="Rape","Sexual Assault",yearly_archive$category)
-citywide_yearly <- right_join(citywide_yearly,yearly_archive %>% select(1:12,23),by="category") %>% 
-  select(1,14:25,2:13)
+citywide_yearly <- right_join(citywide_yearly,yearly_archive %>% select(1:13,23),by="category") %>% 
+  select(1,13:25,2:12)
 # save for annual charts  
 write_csv(citywide_yearly,"data/output/yearly/citywide_yearly.csv")
 
