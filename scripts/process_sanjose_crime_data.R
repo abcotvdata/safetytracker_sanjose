@@ -13,6 +13,7 @@ library(zoo)
 # JAN DATA NOT THERE AS OF FEB 21st
 # JAN DATA WAS THERE AS OF FEB 28th
 # APRIL, MAY DATA STILL NOT THERE AS OF JUNE 26th
+# FINALLY APRIL WAS ADDED JULY 19TH; STILL NO MAY OR JUNE
 
 # scrape the month by month table from SJPD web site
 sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
