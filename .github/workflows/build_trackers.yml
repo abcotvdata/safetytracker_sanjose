@@ -25,8 +25,8 @@ jobs:
         run: Rscript -e 'install.packages(c("sf","tidyverse", "purrr", "lubridate", "rvest", "XML", "leaflet","leaflet.extras","leaflet.providers", "htmlwidgets","pdftools","zoo","readxl","htmltools","rmarkdown", "httr", "polite", "janitor"))'
       - name: Process recent SJ data
         run: Rscript scripts/process_sanjose_crime_data.R
-     # - name: Render markdowns from central script
-     #   run: Rscript scripts/run_markdowns.R
+      - name: Render markdowns from central script
+        run: Rscript scripts/run_markdowns.R
       - name: Commit results
         run: |
           git add -A
