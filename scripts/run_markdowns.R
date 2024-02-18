@@ -27,7 +27,7 @@ rmarkdown::render('scripts/San_Jose_Safety_Tracker_Burglaries.Rmd',
 # THEFTS
 # Load RDS
 # larcenies_beat <- readRDS("scripts/rds/thefts_beat.rds")
-larcenies_city <- readRDS("scripts/rds/thefts_city.rds")
+thefts_city <- readRDS("scripts/rds/thefts_city.rds")
 # Render page
 rmarkdown::render('scripts/San_Jose_Safety_Tracker_Thefts.Rmd', 
                   output_dir = "docs",
