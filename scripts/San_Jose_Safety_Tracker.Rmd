@@ -231,9 +231,9 @@ Per 100,000 people<br>2020 to 2022</p>
 </div>
 </div>
 <br>
-Homicides over the last 12 months are trending <h8>`r ifelse(murders_city$inc_22tolast12>=0," up"," down")` `r ifelse(murders_city$inc_22tolast12>=0,murders_city$inc_22tolast12,substring(murders_city$inc_22tolast12,2))`%</h8> compared to 2022, according to the San Jose Police Department data through `r format(asofdate, "%B %d")`.
+Homicides over the last 12 months are trending <h8>`r ifelse(murders_city$inc_22tolast12>=0," up"," down")` `r ifelse(murders_city$inc_22tolast12>=0,murders_city$inc_22tolast12,substring(murders_city$inc_22tolast12,2))`%</h8> compared to 2022, according to the San Jose Police Department data through `r format(asofdate, "%B %d")`. Totals include murders, but not involuntary manslaughter or justifiable homicide.
 
-However, the murder rate over the last 12 months is <h8>`r case_when((murders_city$rate_last12-murders_city$rate_prior3years)>=0.25 ~ "up",(murders_city$rate_last12-murders_city$rate_prior3years)<=-0.25 ~ "down",TRUE ~ "about the same ")`</h8> compared to the annual average over the last three years.
+The murder rate over the last 12 months is <h8>`r case_when((murders_city$rate_last12-murders_city$rate_prior3years)>=0.25 ~ "up",(murders_city$rate_last12-murders_city$rate_prior3years)<=-0.25 ~ "down",TRUE ~ "about the same ")`</h8> compared to the annual average over the last three years.
 
 One way to think about the danger: the murder rate is <h8>`r murders_city$rate_last12`</h8> per 100,000 residents over the last 12 months. That's far less than the risk of dying in a vehicle crash in California.
 <br>
@@ -244,11 +244,7 @@ One way to think about the danger: the murder rate is <h8>`r murders_city$rate_l
 </script>
 <br>
 
-The risk is not the same neighborhood to neighborhood.
-
-ABC7's data team looked at the San Jose Police Department's crime incident data by police district from 2019 through `r format(asofdate, "%B %d, %Y")`. Totals here include murders, but not involuntary manslaughter or justifiable homicide.
-
-The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas. The city police does release police reports and requests for service, but that data often includes calls or reports that are not equivalent to crimes. Therefore, this data is not reliable for showing the level of crime in local neighborhoods.
+The San Jose Police Department does not release crime data broken down by more detailed neighborhoods or areas as many other cities do, including San Francisco and Oakland. The city police do post online data about police reports or requests for service, but that data often includes calls or reports that are not equivalent to crimes, among other problems. It is not reliable for showing the level of crime in local neighborhoods.
 <br>
 <br>
 <!-- <subhead>Homicides yearly, 2018 through last 12 mos</subhead> -->
