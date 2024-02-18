@@ -28,7 +28,7 @@ result <- scrape(session) %>%
   html_nodes("table.tableData") %>% 
   html_table(fill = TRUE)
 
-result_table <- 
+result_month_table <- 
   result[[1]] %>% 
   clean_names()
 
