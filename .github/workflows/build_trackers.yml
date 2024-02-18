@@ -22,7 +22,7 @@ jobs:
         run: |
           brew install gdal
       - name: Install dependencies and packages
-        run: Rscript -e 'install.packages(c("sf","tidyverse", "purrr", "lubridate", "rvest", "XML", "htmlwidgets","pdftools","zoo","readxl","htmltools","rmarkdown", "httr", "polite"))'
+        run: Rscript -e 'install.packages(c("sf","tidyverse", "purrr", "lubridate", "rvest", "XML", "htmlwidgets","pdftools","zoo","readxl","htmltools","rmarkdown", "httr", "polite", "janitor"))'
       - name: Process recent SJ data
         run: Rscript scripts/process_sanjose_crime_data.R
       - name: Render markdowns from central script
