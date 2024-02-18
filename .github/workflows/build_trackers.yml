@@ -1,7 +1,5 @@
 name: Build safety trackers
 
-# THIS CURRENTLY DOES NOT WORK BECAUSE SJPD IS BLOCKING THE SCRAPER
-
 # Controls when the workflow will run
 on:
   schedule:
