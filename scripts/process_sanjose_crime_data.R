@@ -6,37 +6,76 @@ library(rvest)
 library(XML)
 library(sf)
 library(zoo)
+library(httr)
+library(polite)
 
-# OPEN WORK: Set a cron to do this twice a week, week 2 and 3 of month
-# OCTOBER DATA POSTED IN LATE NOVEMBER
-# DEC DATA NOT THERE AS OF JAN 10th
-# JAN DATA NOT THERE AS OF FEB 21st
-# JAN DATA WAS THERE AS OF FEB 28th
-# APRIL, MAY DATA STILL NOT THERE AS OF JUNE 26th
-# FINALLY APRIL WAS ADDED JULY 19TH; STILL NO MAY OR JUNE
+# OCTOBER DATA POSTED IN LATE NOVEMBER 2022
+# DEC DATA NOT THERE AS OF JAN 10th 2023
+# JAN DATA NOT THERE AS OF FEB 21st 2023
+# JAN DATA WAS THERE AS OF FEB 28th 2023
+# APRIL, MAY DATA STILL NOT THERE AS OF JUNE 26th 2023
+# FINALLY APRIL WAS ADDED JULY 19TH 2023 
+# THE SECOND HALF OF 2023 NOT THERE AS OF FEBRUARY 16TH 2024  
+
+# NEW SCRAPING CODE: use the polite library to bypass the 403 error 
 
 # scrape the month by month table from SJPD web site
-sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
-sanjose_scrape <- sjurl %>%
-  read_html() %>%
-  html_nodes(xpath='//*[@id="widget_4_178_353"]/table[1]') %>%
-  html_table()
-sj_crime_recent <- sanjose_scrape[[1]]
+
+session <- bow("https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly", force = TRUE)
+
+result <- scrape(session) %>% 
+  html_nodes("table.tableData") %>% 
+  html_table(fill = TRUE)
+
+result_table <- 
+  result[[1]] %>% 
+  clean_names()
 
 # scrape ytd second table from same page
-sanjose_scrape <- sjurl %>%
-  read_html() %>%
-  html_nodes(xpath='//*[@id="widget_4_178_353"]/table[2]') %>%
-  html_table()
-sj_crime_ytd <- sanjose_scrape[[1]]
+
+result_ytd_table <- 
+  result[[2]] %>% 
+  clean_names()
 
 # scrape annual table from a separate page
-sj_url2 <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-annual"
-sanjose_scrape <- sj_url2 %>%
-  read_html() %>%
-  html_nodes(xpath='//*[@id="widget_343_190_351"]/table[4]') %>%
-  html_table()
-sj_crime_annual <- sanjose_scrape[[1]]
+
+session <- bow("https://www.sjpd.org/records/crime-stats-maps/crime-statistics-annual", force = TRUE)
+
+result <- scrape(session) %>% 
+  html_nodes("table.tableData") %>% 
+  html_table(fill = TRUE)
+
+result_annual_table <- 
+  result[[4]] %>% 
+  clean_names()
+
+
+# OLD SCRAPING CODE THAT RETURNS A 403 ERROR   
+
+# # scrape the month by month table from SJPD web site
+# 
+# sjurl <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-monthly"
+# 
+# sanjose_scrape <- sjurl %>%
+#   read_html() %>%
+#   html_nodes(xpath='//*[@id="widget_4_178_353"]/table[1]') %>%
+#   html_table()
+# sj_crime_recent <- sanjose_scrape[[1]]
+# 
+# # scrape ytd second table from same page
+# sanjose_scrape <- sjurl %>%
+#   read_html() %>%
+#   html_nodes(xpath='//*[@id="widget_4_178_353"]/table[2]') %>%
+#   html_table()
+# sj_crime_ytd <- sanjose_scrape[[1]]
+# 
+# # scrape annual table from a separate page
+# sj_url2 <- "https://www.sjpd.org/records/crime-stats-maps/crime-statistics-annual"
+# sanjose_scrape <- sj_url2 %>%
+#   read_html() %>%
+#   html_nodes(xpath='//*[@id="widget_343_190_351"]/table[4]') %>%
+#   html_table()
+# sj_crime_annual <- sanjose_scrape[[1]]
 
 # They publish rates on this same site; grabbing for reference/compare
 #sanjose_scrape <- sj_url2 %>%
@@ -50,8 +89,12 @@ sj_crime_annual <- sanjose_scrape[[1]]
 
 
 # Reshape and clean data for use in trackers and dw graphics
-sj_crime <- as.data.frame(t(sj_crime_annual))
-row.names(sj_crime)=NULL 
+sj_crime <- as.data.frame(t(result_annual_table))
+row.names(sj_crime)=NULL
+
+sj_crime <- sj_crime %>% 
+row_to_names(row_number = 1)
+
 names(sj_crime) <- c("category","total13","total14","total15","total16","total17","total18","total19","total20","total21","total22")
 sj_crime <- sj_crime[-1,]
 sj_crime$category <- case_when(str_detect(sj_crime$category, "Aggravated") ~ "Aggravated Assault",
@@ -81,8 +124,8 @@ sj_crime$total22 <- as.numeric(gsub("[^0-9.-]", "", sj_crime$total22))
 # sj_crime <- left_join(sj_crime,sj_annual_2022,by="category")
 
 # clean up two ytd columns to add to this
-names(sj_crime_ytd) <- c("category","ytd23","ytd22","change")
-sj_crime_ytd <- sj_crime_ytd %>% 
+names(result_ytd_table) <- c("category","ytd23","ytd22","change")
+sj_crime_ytd <- result_ytd_table %>% 
   filter(category %in% c("Homicide","Rape","Robbery",
                          "Aggravated Assault","Burglary",
                          "Larceny","Vehicle Theft")) %>% select(1:3)
@@ -119,7 +162,7 @@ sanjose_population <- 1014545
 # add zeros where there were no crimes tallied that year
 #citywide_crime[is.na(citywide_crime)] <- 0
 #district_crime[is.na(district_crime)] <- 0
-
+sj_crime_recent <- result_month_table
 datecalc <- sj_crime_recent %>% summarise_all(~ sum(is.na(.)))
 datecalc$empty_months <- rowSums(datecalc == 12)
 datecalc$month_number <- 12-datecalc$empty_months
